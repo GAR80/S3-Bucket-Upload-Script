@@ -33,7 +33,7 @@ def main_func():
     buckets = get_list_of_buckets()
     users_input = raw_input("Please input the number of the bucket you would like to upload your file into:  ")
     users_bucket = get_user_input(users_input, buckets)
-    my_bucket = s3.Bucket('gavswebsite')
+    my_bucket = s3.Bucket(users_bucket)
     bucket_contents = []
     print("You have selected the following bucket to upload file(s) to:  " + users_bucket)
 
