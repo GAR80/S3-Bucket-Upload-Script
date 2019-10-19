@@ -22,6 +22,11 @@ def print_all_buckets():
     print("You have " + str(bucketlength) + " Buckets")
     print("-------------------------------------")
 
+
+def list_bucket_contents(my_bucket):
+    for object_summary in my_bucket.objects.filter():
+        print(object_summary.key)
+
 def get_user_input(user_input, buckets):
     buckets = get_list_of_buckets()
     bucket_number = int(user_input)
@@ -31,7 +36,7 @@ def get_user_input(user_input, buckets):
 def main_func():
     print_all_buckets()
     buckets = get_list_of_buckets()
-    users_input = raw_input("Please input the number of the bucket you would like to upload or dlete a file from:  ")
+    users_input = raw_input("Please input the number of the bucket you would like to upload or delete a file from:  ")
     users_bucket = get_user_input(users_input, buckets)
     my_bucket = s3.Bucket(users_bucket)
     bucket_contents = []
@@ -40,9 +45,7 @@ def main_func():
     print("###########################")
 
     print("Here is the contents of your chosen bucket")
-    for object_summary in my_bucket.objects.filter():
-        print(object_summary.key)
-
+    list_bucket_contents(my_bucket)
 
     user_choice = raw_input("Do you want to upload a file or delete a file from your chosen S3 bucket? please select upload or delete:   ")
     if user_choice == "upload":
@@ -55,15 +58,14 @@ def main_func():
 
         print("now your bucket contents is as follows:")
         print("--------------------------------------")
-        for object_summary in my_bucket.objects.filter():
-            print(object_summary.key)
+        list_bucket_contents(my_bucket)
     elif user_choice == "delete":
         print("You have chosen to delete a file from your bucket:  " + str(users_bucket))
         file_to_remove = raw_input("type the exact name of the file that you wish to delete for example gates.txt: ")
         s3.Object(users_bucket, file_to_remove).delete()
         print("Now your bucket looks as follows:  ")
-        for object_summary in my_bucket.objects.filter():
-            print(object_summary.key)
+        list_bucket_contents(my_bucket)
+
     else:
         print("You have chosen not to upload a file")
 
