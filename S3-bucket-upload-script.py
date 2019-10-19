@@ -31,11 +31,11 @@ def get_user_input(user_input, buckets):
 def main_func():
     print_all_buckets()
     buckets = get_list_of_buckets()
-    users_input = raw_input("Please input the number of the bucket you would like to upload your file into:  ")
+    users_input = raw_input("Please input the number of the bucket you would like to upload or dlete a file from:  ")
     users_bucket = get_user_input(users_input, buckets)
     my_bucket = s3.Bucket(users_bucket)
     bucket_contents = []
-    print("You have selected the following bucket to upload file(s) to:  " + users_bucket)
+    print("You have selected the following bucket:  " + users_bucket)
 
     print("###########################")
 
@@ -44,8 +44,8 @@ def main_func():
         print(object_summary.key)
 
 
-    user_choice = raw_input("Do you want to go ahead and upload a file to your chosen S3 bucket?:   ")
-    if user_choice == "yes":
+    user_choice = raw_input("Do you want to upload a file or delete a file from your chosen S3 bucket? please select upload or delete:   ")
+    if user_choice == "upload":
         users_file_path = raw_input("Please input the path of the file that you want to upload e.g. /home/ec2-user/mew/    ")
         users_file = raw_input("Please input the name of the file that you wish to upload:  ")
         file_and_path = str(users_file_path) + "/" + str(users_file)
@@ -57,7 +57,13 @@ def main_func():
         print("--------------------------------------")
         for object_summary in my_bucket.objects.filter():
             print(object_summary.key)
-
+    elif user_choice == "delete":
+        print("You have chosen to delete a file from your bucket:  " + str(users_bucket))
+        file_to_remove = raw_input("type the exact name of the file that you wish to delete for example gates.txt: ")
+        s3.Object(users_bucket, file_to_remove).delete()
+        print("Now your bucket looks as follows:  ")
+        for object_summary in my_bucket.objects.filter():
+            print(object_summary.key)
     else:
         print("You have chosen not to upload a file")
 
